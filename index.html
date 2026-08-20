@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>הקרפטים 2026</title>
+<meta name="description" content="אפליקציית הטיול המשפחתי לקרפטים הרומניים — 20–29 בספטמבר 2026">
+<meta name="theme-color" content="#1c3a33">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="קרפטים">
+<style>
+/* ---------- Design tokens: alpine autumn, Carpathian trail blazes ---------- */
+:root{
+  --mist:#eef1ea;         /* ערפל בוקר — רקע */
+  --ink:#22302b;          /* אשוח כהה */
+  --pine:#35604a;         /* אורן */
+  --pine-deep:#1c3a33;    /* דמדומים */
+  --pine-mid:#2e5b4b;
+  --blaze-yellow:#e8b21a; /* Banda Galbenă */
+  --blaze-red:#c4442a;    /* Punct Roșu */
+  --blaze-blue:#2b6cb0;   /* Cruce Albastră */
+  --card:#ffffff;
+  --line:#d8ded4;
+  --muted:#68746c;
+  --soft:#e2e8de;
+  --amber-soft:#fdf3d7;
+  --red-soft:#fbe9e4;
+  --radius:18px;
+  --shadow:0 1px 2px rgba(34,48,43,.06),0 6px 18px rgba(34,48,43,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Heebo","Noto Sans Hebrew",Arial,sans-serif;
+  background:var(--mist);color:var(--ink);line-height:1.55;
+  padding-bottom:calc(72px + env(safe-area-inset-bottom));
+  font-size:16px;
+}
+button{font-family:inherit}
+a{color:var(--pine)}
+bdi{unicode-bidi:isolate}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;display:inline-block}
+
+/* ---------- Header: ridge banner ---------- */
+header{
+  background:linear-gradient(160deg,var(--pine-deep) 0%,var(--pine-mid) 70%,#3c6d59 100%);
+  color:#fff;position:relative;overflow:hidden;
+  padding:calc(14px + env(safe-area-inset-top)) 20px 30px;
+}
+header .ridge{position:absolute;bottom:-2px;left:0;right:0;width:100%;height:34px;opacity:.9}
+header h1{font-size:22px;font-weight:800;letter-spacing:-.3px}
+header .sub{font-size:13px;opacity:.85;margin-top:2px}
+header .top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;position:relative;z-index:1}
+.offline-pill{
+  display:none;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.25);
+  color:#ffe9b0;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap;
+}
+body.is-offline .offline-pill{display:inline-block}
+
+/* ---------- Layout ---------- */
+main{max-width:640px;margin:0 auto;padding:16px 14px 8px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px;border:1px solid rgba(216,222,212,.6)}
+.card h2{font-size:18px;font-weight:800;letter-spacing:-.2px}
+.card h3{font-size:15px;font-weight:800;margin-bottom:4px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.mut{color:var(--muted);font-size:13.5px}
+.small{font-size:13px}
+hr.dv{border:0;border-top:1px dashed var(--line);margin:12px 0}
+
+/* ---------- Trail blaze (signature element) ----------
+   painted white square on rock, colored marking inside */
+.blaze{
+  width:46px;height:46px;flex:0 0 46px;background:#fff;border-radius:7px;
+  box-shadow:0 1px 2px rgba(34,48,43,.18),inset 0 0 0 1px rgba(34,48,43,.07);
+  display:flex;align-items:center;justify-content:center;position:relative;
+  transform:rotate(-2.5deg);
+}
+.blaze.alt{transform:rotate(2deg)}
+.blaze .stripe{width:100%;height:13px;background:var(--blaze-yellow)}
+.blaze .stripe.blue{background:var(--blaze-blue)}
+.blaze .dot{width:18px;height:18px;border-radius:50%;background:var(--blaze-red)}
+.blaze .cross{position:relative;width:22px;height:22px}
+.blaze .cross::before,.blaze .cross::after{content:"";position:absolute;background:var(--blaze-blue);left:50%;top:50%}
+.blaze .cross::before{width:22px;height:7px;transform:translate(-50%,-50%)}
+.blaze .cross::after{width:7px;height:22px;transform:translate(-50%,-50%)}
+.blaze .glyph{font-size:22px;line-height:1}
+.blaze .datebig{font-size:17px;font-weight:800;color:var(--ink);line-height:1;direction:ltr}
+.blaze.big{width:64px;height:64px;flex-basis:64px;border-radius:9px}
+.blaze.big .glyph{font-size:30px}
+.blaze.big .datebig{font-size:23px}
+
+/* mini blaze tag for route options */
+.mark-tag{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--ink);
+  background:#fff;border:1px solid var(--line);border-radius:8px;padding:2px 8px}
+.mark-tag i{display:inline-block;width:14px;height:14px;border-radius:3px;background:#fff;box-shadow:inset 0 0 0 1px rgba(34,48,43,.15);position:relative}
+.mark-tag i::after{content:"";position:absolute;inset:0;margin:auto}
+.mark-tag i.yellow::after{width:14px;height:5px;background:var(--blaze-yellow)}
+.mark-tag i.red::after{width:7px;height:7px;border-radius:50%;background:var(--blaze-red)}
+.mark-tag i.blue::after{width:14px;height:5px;background:var(--blaze-blue)}
+
+/* ---------- Timeline ---------- */
+.tl{position:relative;padding-right:22px}
+.tl::before{content:"";position:absolute;right:22px;top:10px;bottom:10px;border-right:2px dashed #b9c4b6}
+.day-row{position:relative;display:flex;gap:12px;margin-bottom:14px;margin-right:-22px}
+.day-row .blaze{margin-top:8px;z-index:1}
+.day-card{flex:1;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(216,222,212,.6);overflow:hidden}
+.day-head{width:100%;background:none;border:0;text-align:right;padding:13px 15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.day-head .t{font-size:15.5px;font-weight:800}
+.day-head .d{font-size:12.5px;color:var(--muted);margin-top:1px}
+.day-head .chev{color:var(--muted);transition:transform .2s;flex:0 0 auto}
+.day-card.open .chev{transform:rotate(180deg)}
+.day-body{display:none;padding:0 15px 15px;border-top:1px dashed var(--line)}
+.day-card.open .day-body{display:block}
+.day-body>*:first-child{margin-top:12px}
+.today-flag{font-size:11px;font-weight:800;background:var(--blaze-yellow);color:#3d2f05;border-radius:6px;padding:2px 7px;white-space:nowrap}
+
+/* ---------- Chips & stats ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{background:var(--soft);color:var(--ink);border-radius:999px;padding:3px 11px;font-size:12.5px;font-weight:700}
+.chip.warn{background:var(--amber-soft);color:#7a5a08}
+.chip.alert{background:var(--red-soft);color:#8c2d18}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  background:var(--pine);color:#fff;border:0;border-radius:12px;
+  padding:10px 15px;font-size:14.5px;font-weight:700;cursor:pointer;text-decoration:none;
+  min-height:44px;
+}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:#fff;color:var(--pine);border:1.5px solid var(--pine)}
+.btn.soft{background:var(--soft);color:var(--ink)}
+.btn.danger{background:var(--blaze-red)}
+.btn.wide{width:100%}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.btn-row .btn{flex:1 1 auto}
+.copy-line{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:var(--mist);border:1px solid var(--line);border-radius:12px;
+  padding:9px 12px;margin-top:8px;
+}
+.copy-line .lbl{font-size:12px;color:var(--muted);font-weight:700}
+.copy-line .val{font-weight:800;font-size:15.5px;direction:ltr;unicode-bidi:isolate}
+.copy-line button{
+  background:var(--pine);color:#fff;border:0;border-radius:9px;padding:7px 12px;
+  font-size:13px;font-weight:700;cursor:pointer;flex:0 0 auto;min-height:36px;
+}
+
+/* ---------- Transport rows ---------- */
+.tr-row{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px dashed var(--line)}
+.tr-row:last-child{border-bottom:0}
+.tr-row .tm{font-weight:800;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;white-space:nowrap;min-width:86px;text-align:left}
+.tr-row .tx{flex:1;font-size:14.5px}
+
+/* ---------- Route options ---------- */
+.opt{border:1.5px solid var(--line);border-radius:14px;padding:12px;margin-top:10px}
+.opt.hard{border-color:#eccfc5;background:#fffbfa}
+.opt.easy{border-color:#e4d9ae;background:#fffdf4}
+.opt .opt-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+.opt .opt-head b{font-size:14.5px}
+
+/* ---------- Notices ---------- */
+.notice{border-radius:14px;padding:11px 13px;font-size:14px;margin-top:10px;display:flex;gap:9px;align-items:flex-start}
+.notice.warn{background:var(--amber-soft);border:1px solid #efd993}
+.notice.alert{background:var(--red-soft);border:1px solid #f2c4b6}
+.notice.info{background:#e7eef5;border:1px solid #c9d9e8}
+.notice .ic{flex:0 0 auto;font-size:16px;line-height:1.5}
+
+/* ---------- Today hero ---------- */
+.hero{
+  background:linear-gradient(165deg,#fff 0%,#f7f9f4 100%);
+  border-radius:22px;box-shadow:var(--shadow);border:1px solid rgba(216,222,212,.7);
+  padding:18px 16px;margin-bottom:14px;
+}
+.hero .hh{display:flex;gap:14px;align-items:center;margin-bottom:6px}
+.hero .hh .tt{flex:1}
+.hero .hh .tt .t1{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--muted)}
+.hero .hh .tt .t2{font-size:20px;font-weight:800;letter-spacing:-.3px;line-height:1.25}
+.countdown{display:flex;align-items:baseline;gap:10px;margin:6px 0 2px}
+.countdown .n{font-size:52px;font-weight:800;letter-spacing:-2px;color:var(--pine-deep);font-variant-numeric:tabular-nums}
+.countdown .l{font-size:16px;font-weight:700;color:var(--muted)}
+.next-strip{background:var(--soft);border-radius:12px;padding:9px 12px;font-size:13.5px;margin-top:12px}
+.next-strip b{font-weight:800}
+
+/* ---------- Checklist ---------- */
+.gear-group{margin-bottom:4px}
+.gear-item{display:flex;align-items:center;gap:11px;padding:10px 4px;border-bottom:1px dashed var(--line);cursor:pointer;user-select:none}
+.gear-item:last-child{border-bottom:0}
+.gear-item .box{
+  width:24px;height:24px;flex:0 0 24px;border-radius:7px;border:2px solid #a9b5a8;background:#fff;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;
+}
+.gear-item.done .box{background:var(--pine);border-color:var(--pine)}
+.gear-item.done .tx{color:var(--muted);text-decoration:line-through}
+.gear-item .tx{flex:1;font-size:15px}
+.gear-item .rm{border:0;background:none;color:#b46a5a;font-size:17px;padding:4px 6px;cursor:pointer}
+.progress{height:8px;background:var(--soft);border-radius:999px;overflow:hidden;margin:8px 0 4px}
+.progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--pine),#5c8f74);border-radius:999px;transition:width .25s}
+.add-row{display:flex;gap:8px;margin-top:10px}
+.add-row input{
+  flex:1;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15px;
+  font-family:inherit;background:#fff;min-width:0;
+}
+.add-row input:focus{outline:2px solid var(--pine);outline-offset:1px;border-color:var(--pine)}
+
+/* ---------- Emergency ---------- */
+.sos{
+  display:flex;align-items:center;justify-content:center;gap:12px;background:var(--blaze-red);color:#fff;
+  border-radius:18px;padding:18px;text-decoration:none;box-shadow:var(--shadow);margin-bottom:14px;
+}
+.sos .n{font-size:36px;font-weight:800;letter-spacing:1px}
+.sos .t{font-size:14px;font-weight:700;line-height:1.35}
+
+/* ---------- Bottom nav ---------- */
+nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:50;
+  background:rgba(255,255,255,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);
+  display:flex;justify-content:space-around;
+  padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+}
+nav a{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  text-decoration:none;color:var(--muted);font-size:11px;font-weight:700;
+  padding:5px 2px;border-radius:10px;position:relative;
+}
+nav a svg{width:23px;height:23px}
+nav a.active{color:var(--pine-deep)}
+nav a.active::before{content:"";position:absolute;top:-7px;width:26px;height:4px;border-radius:0 0 4px 4px;background:var(--blaze-yellow)}
+
+/* ---------- Toast ---------- */
+#toast{
+  position:fixed;bottom:calc(84px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(12px);
+  background:var(--ink);color:#fff;border-radius:12px;padding:10px 18px;font-size:14px;font-weight:700;
+  opacity:0;pointer-events:none;transition:all .25s;z-index:99;white-space:nowrap;box-shadow:0 6px 22px rgba(0,0,0,.25);
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast .act{color:var(--blaze-yellow);margin-inline-start:12px;cursor:pointer;pointer-events:auto;text-decoration:underline}
+
+.tab-pane{animation:fadeIn .18s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+:focus-visible{outline:2px solid var(--pine);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <div>
+      <h1>הקרפטים 2026 🏔️</h1>
+      <div class="sub">20–29 בספטמבר · בוקרשט → פיאטרה קראיולוי → בוצ'ג'י</div>
+    </div>
+    <span class="offline-pill">● אופליין — הכול שמור במכשיר</span>
+  </div>
+  <svg class="ridge" viewBox="0 0 400 34" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,34 L0,22 L38,10 L70,20 L108,4 L142,18 L178,8 L215,24 L252,6 L290,19 L326,11 L362,23 L400,14 L400,34 Z" fill="#eef1ea"/>
+    <path d="M0,34 L0,27 L45,17 L82,26 L120,12 L160,25 L200,15 L245,29 L285,14 L330,25 L370,18 L400,24 L400,34 Z" fill="#eef1ea" opacity=".45"/>
+  </svg>
+</header>
+
+<main id="view" aria-live="polite"></main>
+
+<nav id="nav">
+  <a href="#today" data-tab="today">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    היום
+  </a>
+  <a href="#route" data-tab="route">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19l5-14 4 9 3-5 4 10"/><path d="M2 19h20"/></svg>
+    מסלול
+  </a>
+  <a href="#bookings" data-tab="bookings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+    הזמנות
+  </a>
+  <a href="#gear" data-tab="gear">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8V6a6 6 0 0 1 12 0v2"/><path d="M5 8h14l1.5 12a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></svg>
+    ציוד
+  </a>
+  <a href="#sos" data-tab="sos">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+    חירום
+  </a>
+</nav>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* =====================================================================
+   DATA — כל תוכן הטיול. לעדכון: ערכו כאן, העלו מחדש, והעלו גרסה ב-sw.js
+   ===================================================================== */
+const TRIP = { start: "2026-09-20", end: "2026-09-29" };
+
+const STAYS = {
+  orhideea: {
+    name: "מלון אורכידאה, בוקרשט", icon: "🏨",
+    nights: "לילות 20–21.9 (צ׳ק־אאוט 22.9)",
+    address: "Calea Plevnei 145B, Sector 6, 060012 Bucharest",
+    refs: [
+      { lbl: "מס׳ הזמנה (Booking)", val: "5612845628" },
+      { lbl: "קוד סודי", val: "7437" }
+    ],
+    notes: ["חדר 1: סוויטה עם חדר שינה אחד וספא — לנבו וענב", "דירה 2: דירת סטנדרט ללא ספא", "שאטל חינם משדה התעופה — הזמנה 389503655"]
+  },
+  maricom: {
+    name: "Maricom Home, זרנשט", icon: "🏠",
+    nights: "לילה 22.9",
+    address: "Strada Toplița 50, 505800 Zărnești",
+    refs: [{ lbl: "מס׳ הזמנה (Booking)", val: "5969459780" }],
+    notes: ["4 מבוגרים + 5 ילדים (12–16) · 4 יחידות אירוח", "צ׳ק־אין: יום ג׳ 22.9 עד 14:00 · צ׳ק־אאוט: יום ד׳ 23.9 עד 11:00"]
+  },
+  curmatura: {
+    name: "Cabana Curmătura", icon: "🛖",
+    nights: "לילות 23–24.9 (שני לילות)",
+    address: "Cabana Curmătura, Piatra Craiului",
+    refs: [],
+    notes: ["בקתת הרים על הפיאטרה קראיולוי — בירת Ciucaș מהחבית ומרק צ׳ורבה", "ליינר חובה לכולם"],
+    open: "פרטי הזמנה לא מופיעים במסמך — לוודא שההזמנה סגורה"
+  },
+  rareforest: {
+    name: "Rare Forest Retreat & Spa, בראן", icon: "🌲",
+    nights: "לילה 25.9",
+    address: "Strada Iancu Gonțea 62, 507025 Bran",
+    refs: [],
+    link: { lbl: "דף המלון ב-Booking", url: "https://www.booking.com/hotel/ro/rare-forest-retreat.he.html" },
+    notes: ["4 מבוגרים + 5 ילדים · 3 יחידות אירוח", "צ׳ק־אין: יום ו׳ 25.9, 15:00–23:00 · צ׳ק־אאוט: שבת 26.9, 10:30–11:00"],
+    open: "מס׳ הזמנה לא מופיע במסמך — להוסיף"
+  },
+  malaiesti: {
+    name: "Cabana Mălăiești", icon: "🛖",
+    nights: "לילה 26.9 · גובה 1,720 מ׳",
+    address: "Cabana Mălăiești, Munții Bucegi",
+    refs: [],
+    phone: "+40741074884",
+    email: "vladadamuta@gmail.com",
+    notes: [
+      "פתוחה כל השנה · כ-100 מיטות בחדרי דורמיטורי מעורבים (2–14 מיטות)",
+      "תנאים בסיסיים: שירותים בחוץ, אין מקלחות. הותקנה הסקה מרכזית — ובכל זאת מומלץ שק שינה",
+      "מחיר: כ-50–70 RON (≈10–14 €) למיטה ללילה · מזומן בלבד!",
+      "אוכל חם 07:30–19:30: צ׳ורבה, תבשילים, בשר על הגריל",
+      "לבקש במפורש ללא חזיר — «fără porc»",
+      "אפשר לבקש מהמטבח כריך לדרך — בלי חסה 🙂"
+    ]
+  },
+  busteni: {
+    name: "לינה בבושטני", icon: "🏨",
+    nights: "לילה 27.9 (ואולי גם 28.9)",
+    address: "Bușteni",
+    refs: [],
+    notes: [],
+    open: "מקום הלינה בבושטני עדיין לא נסגר"
+  }
+};
+
+const OPEN_ITEMS = [
+  "ביטוח נסיעות — עדיין לא נסגר ❗",
+  "לינה בבושטני בלילה 27.9 — לסגור מקום",
+  "לילה 28.9 — להחליט: בושטני או בוקרשט?",
+  "כרטיסי רכבת בושטני → בוקרשט ל-29.9 — לבדוק שעות ולקנות",
+  "בקתת קורמטורה — לוודא שההזמנה סגורה (אין מספר במסמך)",
+  "לקנות מיכל גז לגזייה בבוקרשט"
+];
+
+const DAYS = [
+  {
+    date: "2026-09-20", dow: "ראשון", dnum: "20.9",
+    title: "טיסה לבוקרשט", tag: "ערב יום כיפור",
+    blaze: { glyph: "✈️" },
+    blocks: [
+      { t: "transport", items: [
+        { tm: "11:10", tx: "המראה מנתב״ג, טרמינל 3 · HiSky <bdi>H4236</bdi> · איירבוס A320" },
+        { tm: "13:40", tx: "נחיתה בבוקרשט (OTP, Henri Coandă)" }
+      ]},
+      { t: "notice", kind: "warn", ic: "🎒", p: "אין ארוחות בטיסה ואין כבודה רשומה בחינם — טרולי/תיק בלבד או לרכוש כבודה מראש." },
+      { t: "text", p: "משדה התעופה: שאטל חינם למלון (הזמנה <bdi>389503655</bdi>)." },
+      { t: "stay", ref: "orhideea" },
+      { t: "tip", p: "הערב — ערב יום כיפור." }
+    ]
+  },
+  {
+    date: "2026-09-21", dow: "שני", dnum: "21.9",
+    title: "יום כיפור בבוקרשט", tag: "יום מנוחה",
+    blaze: { glyph: "🕍" },
+    blocks: [
+      { t: "text", p: "יום רגוע בבוקרשט. לילה שני במלון אורכידאה." },
+      { t: "stay", ref: "orhideea" },
+      { t: "tip", p: "אחרי הצום זה זמן טוב להצטייד: מיכל גז לגזייה, חטיפים וכריכים ליום הרכבות." }
+    ]
+  },
+  {
+    date: "2026-09-22", dow: "שלישי", dnum: "22.9",
+    title: "רכבות לזרנשט", tag: "יום נסיעה",
+    blaze: { glyph: "🚂" },
+    blocks: [
+      { t: "transport", items: [
+        { tm: "06:35–09:01", tx: "בוקרשט נורד → ברשוב · <bdi>ATC IR 11531</bdi> · 2 שע׳ 26 דק׳ · 6 עצירות" },
+        { tm: "09:01–09:10", tx: "החלפה בברשוב — 9 דקות בלבד! להיות מוכנים לרדת מהר" },
+        { tm: "09:10–09:51", tx: "ברשוב → זרנשט · <bdi>RC R 11237</bdi> · 41 דק׳" }
+      ]},
+      { t: "text", p: "מחיר: כ-54 ₪ למבוגר." },
+      { t: "stay", ref: "maricom" },
+      { t: "tip", p: "אחר הצהריים חופשי בזרנשט — קניות אחרונות לטרק, ארוחה טובה ושינה מוקדמת. מחר מתחילים!" }
+    ]
+  },
+  {
+    date: "2026-09-23", dow: "רביעי", dnum: "23.9",
+    title: "טרק · יום 1: עליית הקראפטורי", tag: "בוטרוג → קורמטורה",
+    blaze: { stripe: "yellow" },
+    blocks: [
+      { t: "hike",
+        stats: ["התחלה: מעיין בוטרוג", "סיום: בקתת קורמטורה", "סימון: פס צהוב"],
+        mapy: "https://mapy.com/s/hupuzabuza",
+        p: "מתחילים במעיין בוטרוג (Fântâna lui Botorog) בסימון פס צהוב. ההליכה מתחילה במתינות בתוך יער צפוף ומוצל, וככל שיוצאים מקו העצים הערוץ (Valea Crăpăturii) הופך צר, תלול ומרשים מאוד — עד ההגעה לנקודת המפתח של היום: אוכף הקראפטורי (Șaua Crăpăturii). שם מורידים תיקים, מסדירים נשימה — ומפצלים כוחות.",
+        videos: [{ lbl: "🎬 סרטון הטיפוס עד לאוכף", url: "https://www.youtube.com/watch?v=SyEwrfvmEZk" }],
+        options: [
+          { cls: "hard", mark: "red", markLbl: "נקודה אדומה", name: "אופציה א׳ · טיפוס לפסגת טורנו",
+            p: "למחפשי אתגר טכני: עלייה סלעית תלולה עם היעזרות בכבלי מתכת ושרשראות. הפסגה מתגמלת בנוף פנורמי אדיר של כל הרכס. הירידה לקורמטורה תלולה (נקודה אדומה או פס כחול).",
+            links: [{ lbl: "🎬 סרטון הטיפוס לטורנו", url: "https://www.facebook.com/100064629491902/videos/1573465171122974/" }] },
+          { cls: "easy", mark: "yellow", markLbl: "פס צהוב", name: "אופציה ב׳ · ישר לבקתה",
+            p: "נשארים על הפס הצהוב מהאוכף: גלישה בירידה מתונה של 30–45 דק׳ ישירות לבקתת קורמטורה. היתרון: לתפוס מיטות, להוריד ציוד, ולהזמין בירת Ciucaș קרה מהחבית ומרק צ׳ורבה בזמן שמחכים למטפסים." }
+        ]
+      },
+      { t: "stay", ref: "curmatura" }
+    ]
+  },
+  {
+    date: "2026-09-24", dow: "חמישי", dnum: "24.9",
+    title: "טרק · יום 2: רכס הפיאטרה קראיולוי", tag: "מסלול מעגלי מקורמטורה",
+    blaze: { stripe: "yellow", alt: true },
+    blocks: [
+      { t: "hike",
+        stats: ["14.7 ק״מ מעגלי", "7.5–9 שעות", "תוואי סלעי וחשוף"],
+        mapy: "https://mapy.com/s/nodamurore",
+        p: "יום הליכה מלא שיוצא מהבקתה וחוזר אליה: מטפסים עד מחסה Vârful Ascuțit, ומשם דרומה על קו הרכס המרכזי — תוואי סלעי וחשוף שדורש ריכוז, ניווט בין בולדרים ותשומת לב למיקום הרגליים. ברגע שמתרגלים — הליכה אלפינית קלאסית ויפהפייה. יורדים במפנה המזרחי למחסה Grind (זהירות: באזור פירים וחללים קארסטיים עמוקים), ומשם צפונה בשביל נוח דרך מרעה ויער חזרה לבקתה.",
+        options: [
+          { cls: "easy", mark: "blue", markLbl: "אופציה קלה", name: "פיאטרה מיקה וצלב הגיבורים",
+            p: "סיבוב של כ-4.8 ק״מ, פחות מ-3 שעות: מהבקתה לאוכף הקראפטורי ומשם לרכס פיאטרה מיקה. נקודת השיא — צלב הגיבורים (Crucea Eroilor) על שפת המצוק, עם אחת התצפיות הטובות בפארק אל הרכס המשונן ואל זרנשט. בירידה דרך קרחת היער Zănoaga כמה מקטעי כבלים קצרים — קלים וזורמים, יותר שעשוע ממאמץ.",
+            links: [{ lbl: "🗺️ מסלול קל ב-Mapy", url: "https://mapy.com/s/forafokuje" }] }
+        ]
+      },
+      { t: "notice", kind: "warn", ic: "💧", p: "על הרכס המרכזי אין מים ואין אוכל. להצטייד מהבוקר בהרבה מים ובכריכים ששורדים בתיק (בלי חסה!)." },
+      { t: "tip", p: "בסיום — קפוצ׳ינו חזק או כוס יין יבש בבקתה. הרווחתם." },
+      { t: "stay", ref: "curmatura" }
+    ]
+  },
+  {
+    date: "2026-09-25", dow: "שישי", dnum: "25.9",
+    title: "טרק · יום 3: דרך הכפרים לבראן", tag: "פסטרה ומגורה → בראן",
+    blaze: { glyph: "🏰" },
+    blocks: [
+      { t: "hike",
+        stats: ["כ-15 ק״מ", "דרכי עפר כפריות", "יום ארוך אך מתון"],
+        mapy: "https://mapy.com/s/codusomaja",
+        p: "צועדים צפונה ומזרחה אל הכפרים הקסומים פסטרה (Peștera) ומגורה (Măgura). הליכה עם תצפיות נהדרות — לאט לאט מתגלים באופק בראן והמבצר המפורסם (טירת דרקולה). דרכי עפר כפריות ומרחבים ירוקים, ובסוף יורדים אל העיירה בראן. יום ארוך יחסית שמכין היטב לטיפוס התלול של מחר.",
+        options: [
+          { cls: "easy", mark: "blue", markLbl: "קיצור", name: "מוותרים על היום המלא?",
+            p: "אפשר לחפש טרמפ, מונית או תחב״צ ממגורה לבראן." }
+        ]
+      },
+      { t: "stay", ref: "rareforest" }
+    ]
+  },
+  {
+    date: "2026-09-26", dow: "שבת", dnum: "26.9",
+    title: "טרק · יום 4: הטיפוס למליישט", tag: "בראן → Cabana Mălăiești",
+    blaze: { dot: true },
+    blocks: [
+      { t: "hike",
+        stats: ["כ-10.6 ק״מ", "עלייה משמעותית", "היעד: 1,720 מ׳"],
+        mapy: "https://mapy.com/s/kazerosefo",
+        p: "היום מתחיל האתגר האמיתי — הטיפוס אל הלב הפועם של הרי הבוצ׳ג׳י. יוצאים מבראן (אזור רחוב Valea Porții) ומטפסים אל תוך היערות העבותים. ככל שעולים העצים מתמעטים והנוף נפתח לעמקים קרחוניים דרמטיים. היעד: בקתת מליישט המפורסמת, בתוך עמק קרחוני עוצר נשימה מוקף קירות סלע תלולים. להגיע לשם בסוף היום — תחושת סיפוק אדירה."
+      },
+      { t: "notice", kind: "warn", ic: "💶", p: "בבקתה מזומן בלבד (RON)! ולזכור לבקש «fără porc» — ללא חזיר." },
+      { t: "stay", ref: "malaiesti" }
+    ]
+  },
+  {
+    date: "2026-09-27", dow: "ראשון", dnum: "27.9",
+    title: "טרק · יום 5: רמת הבוצ׳ג׳י ורכבל לבושטני", tag: "סיום הטרק 🎉",
+    blaze: { glyph: "🚡" },
+    blocks: [
+      { t: "hike",
+        stats: ["רכסי הבוצ׳ג׳י", "ירידה ברכבל", "סיום: בושטני"],
+        mapy: "https://mapy.com/s/mavuzuhopa",
+        p: "ביום האחרון של הטרק עוזבים את בקתת מליישט ויוצאים מהעמק הקרחוני התלול אל הרכסים והרמות הגבוהות של הבוצ׳ג׳י — תצפיות פנורמיות יוצאות דופן על כל האזור שהלכתם בו בימים האחרונים. אחרי שסופגים את אוויר הפסגות — יורדים ברכבל לבושטני."
+      },
+      { t: "stay", ref: "busteni" }
+    ]
+  },
+  {
+    date: "2026-09-28", dow: "שני", dnum: "28.9",
+    title: "יום כיף בבושטני", tag: "התאוששות ואדרנלין",
+    blaze: { glyph: "🎢" },
+    blocks: [
+      { t: "text", p: "יום חופשי אחרי הטרק. הרעיון: פארק שעשועים / אומגות — יש אחד בבושטני." },
+      { t: "links", items: [{ lbl: "🎬 סרטון של הפארק", url: "https://www.youtube.com/watch?v=EN4kLA3BXfo" }] },
+      { t: "notice", kind: "alert", ic: "❓", p: "לינה הלילה — בושטני או בוקרשט? עדיין לא הוחלט." }
+    ]
+  },
+  {
+    date: "2026-09-29", dow: "שלישי", dnum: "29.9",
+    title: "חזרה הביתה", tag: "בושטני → בוקרשט → ת״א",
+    blaze: { glyph: "🛬" },
+    blocks: [
+      { t: "text", p: "רכבת מבושטני לבוקרשט ומשם לשדה התעופה." },
+      { t: "transport", items: [
+        { tm: "17:55", tx: "המראה מבוקרשט (OTP) · Anima Wings <bdi>A2700</bdi> · איירבוס A220-300" },
+        { tm: "20:40", tx: "נחיתה בנתב״ג, טרמינל 3" }
+      ]},
+      { t: "notice", kind: "warn", ic: "⏰", p: "שעות הרכבת טרם נקבעו — לתכנן הגעה לשדה עד ~15:30. אין ארוחות בטיסה ואין כבודה רשומה בחינם." }
+    ]
+  }
+];
+
+const GEAR = [
+  { g: "מסמכים וכסף", items: [
+    "דרכון ישראלי וצרפתי",
+    "כרטיס עלייה למטוס",
+    "מזומן ברון (RON) — לבקתות, כרטיסים לא מתקבלים"
+  ]},
+  { g: "להליכה", items: [
+    "נעלי הליכה גבוהות וסגורות",
+    "תיק טיולים קטן",
+    "כיסוי גשם לתיק",
+    "שלוקר / בקבוק — 2–3 ליטר לימי הרכס",
+    "מקלות הליכה למי שצריך",
+    "פנס ראש",
+    "מפת Mapy אופליין בטלפון + סוללה/מטען נייד"
+  ]},
+  { g: "ביגוד", items: [
+    "שכבות למזג אוויר אלפיני (באומו יכול להיות 5°C גם באוגוסט)",
+    "מעיל גשם ומכנסי גשם",
+    "מעיל פוך קל ומתכווץ",
+    "כובע מחמם",
+    "כובע שמש",
+    "בגדים להחלפה",
+    "בגדים קצרים",
+    "בגד ים (?)",
+    "סנדלים / כפכפים"
+  ]},
+  { g: "ללינה בבקתות", items: [
+    "ליינר — חובה לכולם!",
+    "אטמי אוזניים!",
+    "מגבת קטנה",
+    "תיק רחצה / היגיינה"
+  ]},
+  { g: "שונות", items: [
+    "משקפיים ספייר למי שיש!",
+    "פלאפון",
+    "גזייה — מיכל גז לקנות בבוקרשט",
+    "כלי אוכל"
+  ]}
+];
+</script>
+<script>
+"use strict";
+/* =====================================================================
+   APP — רינדור, טאבים, צ'קליסט, אופליין
+   ===================================================================== */
+const $view = document.getElementById("view");
+const $toast = document.getElementById("toast");
+
+/* ---------- utils ---------- */
+function todayISO(){
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+function dayIndexFor(iso){ return DAYS.findIndex(d => d.date === iso); }
+function daysUntilStart(){
+  const ms = new Date(TRIP.start + "T00:00:00") - new Date(todayISO() + "T00:00:00");
+  return Math.round(ms / 86400000);
+}
+let toastTimer = null;
+function toast(msg, actLbl, actFn){
+  $toast.innerHTML = msg + (actLbl ? ' <span class="act" id="toast-act">' + actLbl + "</span>" : "");
+  if (actLbl && actFn) document.getElementById("toast-act").onclick = actFn;
+  $toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $toast.classList.remove("show"), actLbl ? 8000 : 2200);
+}
+function copyText(t){
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(()=>toast("הועתק ✓")).catch(()=>legacyCopy(t));
+  } else legacyCopy(t);
+}
+function legacyCopy(t){
+  const ta = document.createElement("textarea");
+  ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); toast("הועתק ✓"); } catch(e){ toast("לא הצלחתי להעתיק"); }
+  document.body.removeChild(ta);
+}
+function mapsUrl(addr){ return "https://maps.google.com/?q=" + encodeURIComponent(addr); }
+
+/* ---------- blaze renderer ---------- */
+function blazeHTML(b, big, dateLbl){
+  const cls = "blaze" + (big ? " big" : "") + (b && b.alt ? " alt" : "");
+  let inner = "";
+  if (dateLbl) inner = '<span class="datebig">' + dateLbl + "</span>";
+  else if (b && b.stripe) inner = '<span class="stripe' + (b.stripe === "blue" ? " blue" : "") + '"></span>';
+  else if (b && b.dot) inner = '<span class="dot"></span>';
+  else if (b && b.cross) inner = '<span class="cross"></span>';
+  else if (b && b.glyph) inner = '<span class="glyph">' + b.glyph + "</span>";
+  return '<div class="' + cls + '">' + inner + "</div>";
+}
+function markTag(color, lbl){
+  return '<span class="mark-tag"><i class="' + color + '"></i>' + lbl + "</span>";
+}
+
+/* ---------- block renderers ---------- */
+function renderBlocks(blocks){
+  return blocks.map(b => {
+    if (b.t === "text") return '<p style="margin-top:10px">' + b.p + "</p>";
+    if (b.t === "tip") return '<div class="notice info"><span class="ic">💡</span><span>' + b.p + "</span></div>";
+    if (b.t === "notice") return '<div class="notice ' + b.kind + '"><span class="ic">' + b.ic + "</span><span>" + b.p + "</span></div>";
+    if (b.t === "transport"){
+      return '<div style="margin-top:8px">' + b.items.map(i =>
+        '<div class="tr-row"><span class="tm">' + i.tm + '</span><span class="tx">' + i.tx + "</span></div>"
+      ).join("") + "</div>";
+    }
+    if (b.t === "links"){
+      return '<div class="btn-row">' + b.items.map(l =>
+        '<a class="btn ghost" href="' + l.url + '" target="_blank" rel="noopener">' + l.lbl + "</a>"
+      ).join("") + "</div>";
+    }
+    if (b.t === "hike"){
+      let h = "";
+      if (b.stats) h += '<div class="chips">' + b.stats.map(s => '<span class="chip">' + s + "</span>").join("") + "</div>";
+      h += "<p>" + b.p + "</p>";
+      if (b.mapy) h += '<div class="btn-row"><a class="btn wide" href="' + b.mapy + '" target="_blank" rel="noopener">🗺️ פתיחת המסלול ב-Mapy</a></div>';
+      if (b.videos) h += '<div class="btn-row">' + b.videos.map(v => '<a class="btn ghost" href="' + v.url + '" target="_blank" rel="noopener">' + v.lbl + "</a>").join("") + "</div>";
+      if (b.options) h += b.options.map(o => {
+        let oh = '<div class="opt ' + o.cls + '"><div class="opt-head"><b>' + o.name + "</b>" + markTag(o.mark, o.markLbl) + "</div><p class='small'>" + o.p + "</p>";
+        if (o.links) oh += '<div class="btn-row">' + o.links.map(l => '<a class="btn soft" href="' + l.url + '" target="_blank" rel="noopener">' + l.lbl + "</a>").join("") + "</div>";
+        return oh + "</div>";
+      }).join("");
+      return h;
+    }
+    if (b.t === "stay"){
+      const s = STAYS[b.ref];
+      let h = '<div class="notice info" style="align-items:center"><span class="ic">' + s.icon + '</span><span><b>לינה: ' + s.name + "</b>";
+      if (s.open) h += '<br><span class="small" style="color:#8c2d18">⚠️ ' + s.open + "</span>";
+      h += ' · <a href="#bookings" onclick="location.hash=\'bookings\'">לפרטי ההזמנה</a></span></div>';
+      return h;
+    }
+    return "";
+  }).join("");
+}
+
+/* ---------- TODAY tab ---------- */
+function renderToday(){
+  const iso = todayISO();
+  const idx = dayIndexFor(iso);
+  let h = "";
+
+  if (idx === -1 && iso < TRIP.start){
+    const n = daysUntilStart();
+    h += '<div class="hero">'
+      + '<div class="eyebrow">ספירה לאחור</div>'
+      + '<div class="countdown"><span class="n">' + n + '</span><span class="l">ימים ליציאה 🇷🇴</span></div>'
+      + '<p class="mut">יום ראשון, 20.9 · המראה 11:10 מנתב״ג · HiSky <bdi>H4236</bdi></p>'
+      + '<div class="btn-row"><a class="btn" href="#route">📋 לתוכנית המלאה</a><a class="btn ghost" href="#gear">🎒 לצ׳קליסט הציוד</a></div>'
+      + "</div>";
+    h += '<div class="card"><div class="eyebrow">משימות פתוחות</div>'
+      + OPEN_ITEMS.map(o => '<div class="tr-row"><span class="tx">' + o + "</span></div>").join("")
+      + "</div>";
+    h += '<div class="notice info"><span class="ic">📲</span><span>טיפ: כל אחד מהמשתתפים מוריד מראש את מפת רומניה האופליין באפליקציית <b>Mapy</b> — הניווט בשטח עובר דרכה.</span></div>';
+  }
+  else if (idx === -1 && iso > TRIP.end){
+    h += '<div class="hero"><div class="hh">' + blazeHTML({glyph:"🏔️"}, true)
+      + '<div class="tt"><div class="t1">הטיול הסתיים</div><div class="t2">איזה טרק זה היה! 5 ימי הרים, 2 רכסים, המון צ׳ורבה 🥣</div></div></div>'
+      + '<div class="btn-row"><a class="btn ghost" href="#route">📖 לעבור שוב על המסלול</a></div></div>';
+  }
+  else {
+    const d = DAYS[idx];
+    h += '<div class="hero">'
+      + '<div class="hh">' + blazeHTML(d.blaze, true, null)
+      + '<div class="tt"><div class="t1">יום ' + (idx+1) + " מתוך 10 · " + d.dow + " " + d.dnum + '</div><div class="t2">' + d.title + "</div></div></div>"
+      + '<div class="chips"><span class="chip warn">' + d.tag + "</span></div>"
+      + renderBlocks(d.blocks)
+      + "</div>";
+    if (idx + 1 < DAYS.length){
+      const nx = DAYS[idx+1];
+      h += '<a class="next-strip" style="display:block;text-decoration:none;color:inherit" href="#route">מחר · ' + nx.dow + " " + nx.dnum + ": <b>" + nx.title + "</b> ←</a>";
+    }
+  }
+  return '<div class="tab-pane">' + h + "</div>";
+}
+
+/* ---------- ROUTE tab (timeline) ---------- */
+function renderRoute(){
+  const iso = todayISO();
+  let h = '<div class="tab-pane"><div class="tl">';
+  DAYS.forEach((d, i) => {
+    const isToday = d.date === iso;
+    h += '<div class="day-row">'
+      + blazeHTML(d.blaze, false, null)
+      + '<div class="day-card' + (isToday ? " open" : "") + '" id="dc' + i + '">'
+      + '<button class="day-head" onclick="toggleDay(' + i + ')" aria-expanded="' + (isToday ? "true" : "false") + '">'
+      + '<span><span class="t">' + d.title + (isToday ? ' <span class="today-flag">היום</span>' : "") + '</span><br><span class="d">' + d.dow + " · " + d.dnum + " · " + d.tag + "</span></span>"
+      + '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'
+      + "</button>"
+      + '<div class="day-body">' + renderBlocks(d.blocks) + "</div>"
+      + "</div></div>";
+  });
+  h += "</div></div>";
+  return h;
+}
+function toggleDay(i){
+  const el = document.getElementById("dc" + i);
+  el.classList.toggle("open");
+  el.querySelector(".day-head").setAttribute("aria-expanded", el.classList.contains("open"));
+}
+
+/* ---------- BOOKINGS tab ---------- */
+function stayCard(s){
+  let h = '<div class="card"><div style="display:flex;gap:10px;align-items:flex-start">'
+    + '<span style="font-size:26px">' + s.icon + '</span><div style="flex:1">'
+    + "<h3>" + s.name + "</h3>"
+    + '<div class="mut">' + s.nights + "</div></div></div>";
+  (s.refs || []).forEach(r => {
+    h += '<div class="copy-line"><span><span class="lbl">' + r.lbl + '</span><br><span class="val">' + r.val + "</span></span>"
+      + '<button onclick="copyText(\'' + r.val + '\')">העתקה</button></div>';
+  });
+  if (s.phone){
+    h += '<div class="copy-line"><span><span class="lbl">טלפון (הזמנות במזומן, טלפונית)</span><br><span class="val">' + s.phone + "</span></span>"
+      + '<button onclick="copyText(\'' + s.phone + '\')">העתקה</button></div>';
+    h += '<div class="btn-row"><a class="btn" href="tel:' + s.phone + '">📞 חיוג לבקתה</a>'
+      + '<a class="btn ghost" href="mailto:' + s.email + '">✉️ אימייל</a></div>';
+  }
+  if (s.notes && s.notes.length) h += '<hr class="dv">' + s.notes.map(n => '<p class="small" style="margin-top:4px">· ' + n + "</p>").join("");
+  if (s.open) h += '<div class="notice alert"><span class="ic">⚠️</span><span>' + s.open + "</span></div>";
+  const btns = [];
+  if (s.address && s.address.indexOf(",") > -1) btns.push('<a class="btn soft" href="' + mapsUrl(s.address) + '" target="_blank" rel="noopener">📍 ניווט לכתובת</a>');
+  if (s.link) btns.push('<a class="btn soft" href="' + s.link.url + '" target="_blank" rel="noopener">🔗 ' + s.link.lbl + "</a>");
+  if (btns.length) h += '<div class="btn-row">' + btns.join("") + "</div>";
+  if (s.address) h += '<p class="mut small" style="margin-top:8px;direction:ltr;text-align:left">' + s.address + "</p>";
+  return h + "</div>";
+}
+function renderBookings(){
+  let h = '<div class="tab-pane">';
+  h += '<div class="card"><div class="eyebrow">טיסות</div>'
+    + '<div class="tr-row"><span class="tm">20.9</span><span class="tx">ת״א → בוקרשט · המראה <b class="num">11:10</b> נחיתה <b class="num">13:40</b> · HiSky <bdi>H4236</bdi> · A320</span></div>'
+    + '<div class="tr-row"><span class="tm">29.9</span><span class="tx">בוקרשט → ת״א · המראה <b class="num">17:55</b> נחיתה <b class="num">20:40</b> · Anima Wings <bdi>A2700</bdi> · A220-300</span></div>'
+    + '<div class="notice warn"><span class="ic">🎒</span><span>בשתי הטיסות: אין ארוחות ואין כבודה רשומה בחינם.</span></div>'
+    + '<div class="copy-line"><span><span class="lbl">שאטל שדה→מלון (חינם)</span><br><span class="val">389503655</span></span><button onclick="copyText(\'389503655\')">העתקה</button></div>'
+    + "</div>";
+  h += '<div class="card"><div class="eyebrow">רכבות · 22.9</div>'
+    + '<div class="tr-row"><span class="tm">06:35–09:01</span><span class="tx">בוקרשט נורד → ברשוב · <bdi>ATC IR 11531</bdi></span></div>'
+    + '<div class="tr-row"><span class="tm">09:10–09:51</span><span class="tx">ברשוב → זרנשט · <bdi>RC R 11237</bdi> · החלפה של 9 דק׳ בלבד!</span></div>'
+    + '<p class="mut small" style="margin-top:8px">כ-54 ₪ למבוגר · חזור 29.9: בושטני → בוקרשט — שעות טרם נקבעו ⚠️</p>'
+    + "</div>";
+  ["orhideea","maricom","curmatura","rareforest","malaiesti","busteni"].forEach(k => { h += stayCard(STAYS[k]); });
+  h += "</div>";
+  return h;
+}
+
+/* ---------- GEAR tab ---------- */
+const LS_CHECKS = "gear-checks-v1", LS_CUSTOM = "gear-custom-v1";
+function loadJSON(k, fb){ try { return JSON.parse(localStorage.getItem(k)) || fb; } catch(e){ return fb; } }
+function saveJSON(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+
+function gearAll(){
+  const custom = loadJSON(LS_CUSTOM, []);
+  const groups = GEAR.map((g, gi) => ({ g: g.g, items: g.items.map((tx, ii) => ({ id: "g" + gi + "i" + ii, tx })) }));
+  if (custom.length) groups.push({ g: "פריטים שהוספתם", items: custom.map((tx, i) => ({ id: "c" + i, tx, custom: true, ci: i })) });
+  return groups;
+}
+function renderGear(){
+  const checks = loadJSON(LS_CHECKS, {});
+  const groups = gearAll();
+  let total = 0, done = 0;
+  groups.forEach(g => g.items.forEach(it => { total++; if (checks[it.id]) done++; }));
+  const pct = total ? Math.round(done / total * 100) : 0;
+
+  let h = '<div class="tab-pane">';
+  h += '<div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2>צ׳קליסט ציוד 🎒</h2>'
+    + '<span class="mut"><b>' + done + "</b>/" + total + "</span></div>"
+    + '<div class="progress"><i style="width:' + pct + '%"></i></div>'
+    + '<p class="mut small">הרשימה אישית ונשמרת במכשיר הזה בלבד.</p></div>';
+
+  groups.forEach(g => {
+    h += '<div class="card gear-group"><div class="eyebrow">' + g.g + "</div>";
+    g.items.forEach(it => {
+      const on = !!checks[it.id];
+      h += '<div class="gear-item' + (on ? " done" : "") + '" onclick="toggleGear(\'' + it.id + '\')" role="checkbox" aria-checked="' + on + '" tabindex="0" onkeydown="if(event.key===\' \'||event.key===\'Enter\'){event.preventDefault();toggleGear(\'' + it.id + '\')}">'
+        + '<span class="box">' + (on ? "✓" : "") + "</span>"
+        + '<span class="tx">' + it.tx + "</span>"
+        + (it.custom ? '<button class="rm" onclick="event.stopPropagation();removeCustom(' + it.ci + ')" aria-label="הסרה">✕</button>' : "")
+        + "</div>";
+    });
+    h += "</div>";
+  });
+
+  h += '<div class="card"><div class="eyebrow">הוספת פריט</div>'
+    + '<div class="add-row"><input id="new-gear" type="text" placeholder="למשל: מטען נייד נוסף" onkeydown="if(event.key===\'Enter\')addGear()">'
+    + '<button class="btn" onclick="addGear()">הוספה</button></div>'
+    + '<div class="btn-row"><button class="btn soft wide" onclick="resetGear()">איפוס כל הסימונים</button></div>'
+    + "</div></div>";
+  return h;
+}
+function toggleGear(id){
+  const checks = loadJSON(LS_CHECKS, {});
+  checks[id] = !checks[id];
+  saveJSON(LS_CHECKS, checks);
+  render();
+}
+function addGear(){
+  const inp = document.getElementById("new-gear");
+  const v = (inp.value || "").trim();
+  if (!v) return;
+  const custom = loadJSON(LS_CUSTOM, []);
+  custom.push(v);
+  saveJSON(LS_CUSTOM, custom);
+  render();
+  toast("נוסף לרשימה ✓");
+}
+function removeCustom(i){
+  const custom = loadJSON(LS_CUSTOM, []);
+  custom.splice(i, 1);
+  saveJSON(LS_CUSTOM, custom);
+  render();
+}
+function resetGear(){
+  if (confirm("לאפס את כל הסימונים ברשימה?")){
+    saveJSON(LS_CHECKS, {});
+    render();
+  }
+}
+
+/* ---------- SOS tab ---------- */
+function renderSOS(){
+  let h = '<div class="tab-pane">';
+  h += '<a class="sos" href="tel:112"><span class="n num">112</span><span class="t">חירום ברומניה<br>לבקש <b>Salvamont</b> — יחידת חילוץ ההרים</span></a>';
+  h += '<div class="card"><div class="eyebrow">כדאי לדעת</div>'
+    + '<p class="small" style="margin-top:6px">· כיסוי סלולרי קיים ברוב הרכסים, חלקי בעמקים. אם אין קליטה — לנוע לנקודה גבוהה.</p>'
+    + '<p class="small" style="margin-top:6px">· ביום הרכס (24.9): פירים וחללים קארסטיים עמוקים באזור מחסה Grind — להישאר על השביל המסומן.</p>'
+    + '<p class="small" style="margin-top:6px">· משפט שימושי: <b>«fără porc»</b> = בלי חזיר.</p>'
+    + "</div>";
+  h += '<div class="notice alert"><span class="ic">❗</span><span><b>ביטוח נסיעות עדיין לא נסגר.</b> לסגור לפני היציאה ולעדכן כאן את פרטי הפוליסה והטלפון של חברת הביטוח.</span></div>';
+  h += '<div class="card"><div class="eyebrow">טלפונים</div>'
+    + '<div class="copy-line"><span><span class="lbl">Cabana Mălăiești</span><br><span class="val">+40741074884</span></span><button onclick="copyText(\'+40741074884\')">העתקה</button></div>'
+    + '<div class="btn-row"><a class="btn" href="tel:+40741074884">📞 חיוג לבקתת מליישט</a></div>'
+    + "</div>";
+  h += '<div class="card"><div class="eyebrow">כתובות הלינה</div>'
+    + ["orhideea","maricom","rareforest"].map(k => {
+        const s = STAYS[k];
+        return '<div class="tr-row"><span class="tx"><b>' + s.name + '</b><br><span class="mut small" style="direction:ltr;unicode-bidi:isolate;display:inline-block">' + s.address + "</span></span></div>";
+      }).join("")
+    + "</div></div>";
+  return h;
+}
+
+/* ---------- Router ---------- */
+const TABS = { today: renderToday, route: renderRoute, bookings: renderBookings, gear: renderGear, sos: renderSOS };
+function currentTab(){
+  const t = (location.hash || "#today").slice(1);
+  return TABS[t] ? t : "today";
+}
+function render(){
+  const t = currentTab();
+  $view.innerHTML = TABS[t]();
+  document.querySelectorAll("nav a").forEach(a => a.classList.toggle("active", a.dataset.tab === t));
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", render);
+
+/* ---------- Offline & SW ---------- */
+function syncOnline(){ document.body.classList.toggle("is-offline", !navigator.onLine); }
+window.addEventListener("online", syncOnline);
+window.addEventListener("offline", syncOnline);
+syncOnline();
+
+if ("serviceWorker" in navigator){
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").then(reg => {
+      reg.addEventListener("updatefound", () => {
+        const nw = reg.installing;
+        if (!nw) return;
+        nw.addEventListener("statechange", () => {
+          if (nw.state === "installed" && navigator.serviceWorker.controller){
+            toast("יש גרסה חדשה של האפליקציה", "רענון", () => location.reload());
+          }
+        });
+      });
+    }).catch(()=>{ /* לא קריטי — האפליקציה עובדת גם בלי */ });
+  });
+}
+
+render();
+</script>
+</body>
+</html>

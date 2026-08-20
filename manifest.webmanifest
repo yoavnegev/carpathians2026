@@ -1,0 +1,18 @@
+{
+  "name": "הקרפטים 2026 — הטיול המשפחתי",
+  "short_name": "קרפטים",
+  "description": "אפליקציית הטיול לקרפטים הרומניים, 20–29 בספטמבר 2026 — מסלולים, הזמנות, ציוד וחירום. עובדת אופליין.",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eef1ea",
+  "theme_color": "#1c3a33",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
